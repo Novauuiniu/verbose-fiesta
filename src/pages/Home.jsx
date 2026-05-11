@@ -47,28 +47,51 @@ const STATS = [
   { value: '∞', label: 'Scalability' }
 ];
 
+function parseJwt(token) {
+  try {
+    return JSON.parse(atob(token.split('.')[1]));
+  } catch {
+    return null;
+  }
+}
+
 export default function Home() {
   const navigate = useNavigate();
   const [scrollY, setScrollY] = useState(0);
-
-  useEffect(() => {
+  const [loggedInUser, setLoggedInUser] = useState(() => {
     const token = localStorage.getItem('zenith_token');
     if (token) {
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        if (payload.exp * 1000 > Date.now()) {
-          navigate('/dashboard');
-          return;
-        }
-      } catch { /* invalid token, stay on home */ }
+      const payload = parseJwt(token);
+      if (payload && payload.exp * 1000 > Date.now()) {
+        return payload;
+      }
     }
-  }, [navigate]);
+    return null;
+  });
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (!profileMenuOpen) return;
+    const handleClick = () => setProfileMenuOpen(false);
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, [profileMenuOpen]);
+
+  const avatarUrl = loggedInUser?.avatar
+    ? `https://cdn.discordapp.com/avatars/${loggedInUser.userId}/${loggedInUser.avatar}.png?size=64`
+    : 'https://cdn.discordapp.com/embed/avatars/0.png';
+
+  const handleLogout = () => {
+    localStorage.removeItem('zenith_token');
+    localStorage.removeItem('zenith_guild_id');
+    setLoggedInUser(null);
+  };
 
   return (
     <div className="home-page">
@@ -86,9 +109,36 @@ export default function Home() {
           <div className="home-nav-links">
             <a href="#features">Features</a>
             <a href="#stats">Performance</a>
-            <a href="/api/auth/login" className="btn-discord home-nav-cta">
-              <i className="fa-brands fa-discord"></i> Login
-            </a>
+            {loggedInUser ? (
+              <>
+                <button className="btn-discord home-nav-cta" onClick={() => navigate('/dashboard')} style={{ border: 'none', cursor: 'pointer' }}>
+                  <i className="fa-solid fa-gauge-high"></i> Dashboard
+                </button>
+                <div className="home-profile-widget" onClick={(e) => { e.stopPropagation(); setProfileMenuOpen(!profileMenuOpen); }}>
+                  <img src={avatarUrl} alt="Profile" className="home-profile-avatar" />
+                  <div className={`home-profile-dropdown ${profileMenuOpen ? 'active' : ''}`}>
+                    <div className="home-profile-dropdown-header">
+                      <img src={avatarUrl} alt="" className="home-profile-dropdown-avatar" />
+                      <div>
+                        <span className="home-profile-dropdown-name">{loggedInUser.global_name || loggedInUser.username}</span>
+                        <span className="home-profile-dropdown-tag">@{loggedInUser.username}</span>
+                      </div>
+                    </div>
+                    <div className="home-profile-dropdown-divider" />
+                    <button className="home-profile-dropdown-item" onClick={() => navigate('/dashboard')}>
+                      <i className="fa-solid fa-gauge-high"></i> Dashboard
+                    </button>
+                    <button className="home-profile-dropdown-item" onClick={handleLogout}>
+                      <i className="fa-solid fa-right-from-bracket"></i> Log Out
+                    </button>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <a href="/api/auth/login" className="btn-discord home-nav-cta">
+                <i className="fa-brands fa-discord"></i> Login
+              </a>
+            )}
           </div>
         </div>
       </nav>
@@ -110,9 +160,15 @@ export default function Home() {
             deep analytics, and a beautiful dashboard built for teams that care.
           </p>
           <div className="home-hero-actions">
-            <a href="/api/auth/login" className="btn-primary home-hero-btn">
-              <i className="fa-brands fa-discord"></i> Get Started with Discord
-            </a>
+            {loggedInUser ? (
+              <button className="btn-primary home-hero-btn" onClick={() => navigate('/dashboard')} style={{ border: 'none', cursor: 'pointer' }}>
+                <i className="fa-solid fa-gauge-high"></i> Go to Dashboard
+              </button>
+            ) : (
+              <a href="/api/auth/login" className="btn-primary home-hero-btn">
+                <i className="fa-brands fa-discord"></i> Get Started with Discord
+              </a>
+            )}
             <a href="#features" className="btn-secondary home-hero-btn-alt">
               Explore Features <i className="fa-solid fa-arrow-down"></i>
             </a>
@@ -195,9 +251,15 @@ export default function Home() {
         <div className="home-cta-inner glass-panel">
           <h2>Ready to level up your server?</h2>
           <p>Join thousands of communities already using zyntra for safer, smarter moderation.</p>
-          <a href="/api/auth/login" className="btn-primary home-hero-btn">
-            <i className="fa-brands fa-discord"></i> Login with Discord
-          </a>
+          {loggedInUser ? (
+            <button className="btn-primary home-hero-btn" onClick={() => navigate('/dashboard')} style={{ border: 'none', cursor: 'pointer' }}>
+              <i className="fa-solid fa-gauge-high"></i> Open Dashboard
+            </button>
+          ) : (
+            <a href="/api/auth/login" className="btn-primary home-hero-btn">
+              <i className="fa-brands fa-discord"></i> Login with Discord
+            </a>
+          )}
         </div>
       </section>
 
@@ -211,7 +273,7 @@ export default function Home() {
           <div className="home-footer-links">
             <a href="#features">Features</a>
             <a href="#stats">Performance</a>
-            <a href="/login">Dashboard</a>
+            <span style={{ cursor: 'pointer' }} onClick={() => navigate(loggedInUser ? '/dashboard' : '/login')}>Dashboard</span>
           </div>
         </div>
         <div className="home-footer-bottom">

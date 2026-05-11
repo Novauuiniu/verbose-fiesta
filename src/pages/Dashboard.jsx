@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Overview from '../components/Overview';
@@ -24,6 +24,8 @@ export default function Dashboard() {
   const [activePage, setActivePage] = useState('overview');
   const [showLanding, setShowLanding] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const profileDropdownRef = useRef(null);
 
   useEffect(() => {
     const token = localStorage.getItem('zenith_token');
@@ -59,6 +61,16 @@ export default function Dashboard() {
     }
   }, [navigate]);
 
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target)) {
+        setProfileDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const handleGuildSelect = (guildId) => {
     localStorage.setItem('zenith_guild_id', guildId);
     setSelectedGuild(guildId);
@@ -72,6 +84,12 @@ export default function Dashboard() {
     fetchDashboardData();
   }, [selectedGuild]);
 
+  const handleLogout = () => {
+    localStorage.removeItem('zenith_token');
+    localStorage.removeItem('zenith_guild_id');
+    navigate('/login');
+  };
+
   const pageTitleMap = {
     overview: 'Dashboard Overview',
     moderation: 'Server Moderation',
@@ -83,6 +101,10 @@ export default function Dashboard() {
 
   const requiresGuild = ['overview', 'moderation', 'automod'].includes(activePage);
   const canRenderPage = !showLanding && (!requiresGuild || selectedGuild);
+
+  const avatarUrl = user?.avatar
+    ? `https://cdn.discordapp.com/avatars/${user.userId}/${user.avatar}.png?size=64`
+    : 'https://cdn.discordapp.com/embed/avatars/0.png';
 
   if (!user) return <div className="login-body"><div className="loader">Authenticating...</div></div>;
 
@@ -138,6 +160,38 @@ export default function Dashboard() {
                 <i className="fa-solid fa-rotate-right"></i>
               </button>
             )}
+
+            {/* Modern Profile Widget */}
+            <div className="topbar-profile-widget" ref={profileDropdownRef}>
+              <button
+                className="topbar-profile-trigger"
+                onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+              >
+                <img src={avatarUrl} alt="Profile" className="topbar-profile-avatar" />
+                <span className="topbar-profile-name">{user.global_name || user.username}</span>
+                <i className={`fa-solid fa-chevron-${profileDropdownOpen ? 'up' : 'down'}`} style={{ fontSize: '0.65rem', opacity: 0.6 }}></i>
+              </button>
+              <div className={`topbar-profile-dropdown ${profileDropdownOpen ? 'active' : ''}`}>
+                <div className="topbar-profile-dropdown-header">
+                  <img src={avatarUrl} alt="" className="topbar-profile-dropdown-avatar" />
+                  <div className="topbar-profile-dropdown-info">
+                    <span className="topbar-profile-dropdown-name">{user.global_name || user.username}</span>
+                    <span className="topbar-profile-dropdown-tag">@{user.username}</span>
+                  </div>
+                </div>
+                <div className="topbar-profile-dropdown-divider" />
+                <button className="topbar-profile-dropdown-item" onClick={() => { navigate('/'); setProfileDropdownOpen(false); }}>
+                  <i className="fa-solid fa-house"></i> Home
+                </button>
+                <button className="topbar-profile-dropdown-item" onClick={() => { setActivePage('account'); setProfileDropdownOpen(false); }}>
+                  <i className="fa-solid fa-user-gear"></i> Account Settings
+                </button>
+                <div className="topbar-profile-dropdown-divider" />
+                <button className="topbar-profile-dropdown-item topbar-profile-logout" onClick={handleLogout}>
+                  <i className="fa-solid fa-right-from-bracket"></i> Log Out
+                </button>
+              </div>
+            </div>
             
           </div>
         </header>
