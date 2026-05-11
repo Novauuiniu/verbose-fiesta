@@ -98,7 +98,7 @@ export default function AccountManager({ user }) {
   const statusInfo = STATUS_CONFIG[discordStatus] || STATUS_CONFIG.offline;
 
   const customStatus = presence?.activities?.find(a => a.type === 4);
-  const currentActivity = presence?.activities?.find(a => a.type !== 4 && a.type !== 2);
+  const currentActivity = presence?.activities?.find(a => a.type !== 4 && !(a.type === 2 && presence?.spotify));
 
   const spotifyData = presence?.spotify || null;
 
