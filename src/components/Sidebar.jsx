@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Sidebar({ user, selectedGuild, onSelectGuild, activePage, setActivePage, mobileMenuOpen, setMobileMenuOpen }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const navigate = useNavigate();
 
   const currentGuild = user?.allowedGuilds?.find(g => g.id === selectedGuild);
 
@@ -28,7 +30,7 @@ export default function Sidebar({ user, selectedGuild, onSelectGuild, activePage
   return (
     <nav className={`sidebar ${mobileMenuOpen ? 'mobile-open' : ''}`}>
       <div className="sidebar-header dashboard-sidebar-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-        <div className="sidebar-brand-block">
+        <div className="sidebar-brand-block" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
           <p className="sidebar-kicker">AI Moderation Platform</p>
           <h2 className="brand-text-glow">Zyntra</h2>
         </div>
@@ -66,6 +68,14 @@ export default function Sidebar({ user, selectedGuild, onSelectGuild, activePage
           ))}
         </div>
       </div>
+
+      <div className="sidebar-section-label">Navigation</div>
+      <ul className="nav-links" style={{ flex: 'none' }}>
+        <li onClick={() => { navigate('/'); closeMobileMenu(); }}>
+          <i className="fa-solid fa-house"></i>
+          <span>Home</span>
+        </li>
+      </ul>
 
       <div className="sidebar-section-label">Workspace</div>
       <ul className="nav-links">
