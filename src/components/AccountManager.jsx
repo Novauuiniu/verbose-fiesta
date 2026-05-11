@@ -98,7 +98,7 @@ export default function AccountManager({ user }) {
   const statusInfo = STATUS_CONFIG[discordStatus] || STATUS_CONFIG.offline;
 
   const customStatus = presence?.activities?.find(a => a.type === 4);
-  const currentActivity = presence?.activities?.find(a => a.type !== 4);
+  const currentActivity = presence?.activities?.find(a => a.type !== 4 && a.type !== 2);
 
   const spotifyData = presence?.spotify || null;
 
@@ -285,7 +285,7 @@ export default function AccountManager({ user }) {
               </div>
             )}
 
-            {discordUser?.accent_color && (
+            {discordUser?.accent_color != null && (
               <div className="glass-panel settings-detail-card">
                 <div className="settings-detail-icon" style={{ background: `#${discordUser.accent_color.toString(16).padStart(6, '0')}33`, color: `#${discordUser.accent_color.toString(16).padStart(6, '0')}` }}>
                   <i className="fa-solid fa-palette"></i>
