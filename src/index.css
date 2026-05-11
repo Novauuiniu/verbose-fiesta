@@ -3954,5 +3954,231 @@ input:checked + .slider:before {
     .settings-servers-grid {
         grid-template-columns: 1fr;
     }
+    .settings-spotify-body {
+        flex-direction: column;
+    }
+    .settings-activity-game-body {
+        flex-direction: column;
+    }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   PROFILE - STATUS LINE & CUSTOM STATUS
+   ═══════════════════════════════════════════════════════════════ */
+
+.settings-profile-status-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.settings-custom-status {
+    color: var(--text-secondary);
+    padding-left: 8px;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    font-weight: 400;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   BIO / ABOUT ME
+   ═══════════════════════════════════════════════════════════════ */
+
+.settings-bio-card {
+    padding: 24px;
+}
+
+.settings-bio-card h3 {
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-primary);
+}
+
+.settings-bio-content {
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    line-height: 1.7;
+}
+
+.settings-bio-content p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.settings-color-swatch {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    flex-shrink: 0;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   ACTIVITY TAB
+   ═══════════════════════════════════════════════════════════════ */
+
+.settings-activity-status-card {
+    padding: 24px;
+}
+
+.settings-activity-status-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+}
+
+.settings-activity-status-header h3 {
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    margin: 0;
+}
+
+.settings-activity-custom-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.settings-activity-emoji {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+}
+
+.settings-activity-emoji-text {
+    font-size: 1.2rem;
+}
+
+.settings-activity-no-data {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-style: italic;
+    margin: 0;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   SPOTIFY CARD
+   ═══════════════════════════════════════════════════════════════ */
+
+.settings-spotify-card {
+    padding: 24px;
+    border-left: 3px solid #1DB954;
+}
+
+.settings-spotify-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #1DB954;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.settings-spotify-body {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.settings-spotify-art {
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    object-fit: cover;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    flex-shrink: 0;
+}
+
+.settings-spotify-info h4 {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    margin-bottom: 4px;
+}
+
+.settings-spotify-artist {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin: 0 0 2px;
+}
+
+.settings-spotify-album {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-style: italic;
+    margin: 0;
+    opacity: 0.7;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   GAME / ACTIVITY CARD
+   ═══════════════════════════════════════════════════════════════ */
+
+.settings-activity-game-card {
+    padding: 24px;
+}
+
+.settings-activity-game-card h3 {
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.settings-activity-game-body {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.settings-activity-game-art {
+    width: 72px;
+    height: 72px;
+    border-radius: 12px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.settings-activity-game-info h4 {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    margin-bottom: 4px;
+}
+
+.settings-activity-game-info p {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin: 0 0 2px;
+}
+
+.settings-activity-game-state {
+    font-style: italic;
+    opacity: 0.7;
 }
 
